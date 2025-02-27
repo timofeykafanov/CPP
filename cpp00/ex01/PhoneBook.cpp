@@ -27,16 +27,20 @@ std::string PhoneBook::truncateString(const std::string& str) const {
 }
 
 void PhoneBook::displayAllContacts() const {
-    std::cout << std::setw(10) << "Index" << "|";
+
+    std::cout << "+----------+----------+----------+----------+" << std::endl;
+    std::cout << "|" << std::setw(10) << "Index" << "|";
     std::cout << std::setw(10) << "First name" << "|";
     std::cout << std::setw(10) << "Last name" << "|";
-    std::cout << std::setw(10) << "Nickname" << std::endl;
+    std::cout << std::setw(10) << "Nickname" << "|" << std::endl;
+    std::cout << "+----------+----------+----------+----------+" << std::endl;
 
     for(int i = 0; i < contactCount; i++) {
-        std::cout << std::setw(10) << i << "|";
+        std::cout << "|" << std::setw(10) << i << "|";
         std::cout << std::setw(10) << truncateString(contacts[i].getFirstName()) << "|";
         std::cout << std::setw(10) << truncateString(contacts[i].getLastName()) << "|";
-        std::cout << std::setw(10) << truncateString(contacts[i].getNickname()) << std::endl;
+        std::cout << std::setw(10) << truncateString(contacts[i].getNickname()) << "|" << std::endl;
+        std::cout << "+----------+----------+----------+----------+" << std::endl;
     }
 }
 
