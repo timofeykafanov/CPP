@@ -8,7 +8,7 @@ CPPFLAGS	= -Wall -Wextra -Werror -std=c++98
 DFLAGS	 	= -MD -MP
 MAKEFLAGS	= -j$(nproc) --no-print-directory
 
-NAME		= account
+NAME		= zombie
 
 SRCS		= main.cpp \
 			  Zombie.cpp \
