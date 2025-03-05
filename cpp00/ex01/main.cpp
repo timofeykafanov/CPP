@@ -13,11 +13,14 @@ std::string getInput(const std::string& prompt, int *toExit) {
             std::cout << "\nExiting program! All your contacts are lost forever!" << std::endl;
             *toExit = 1;
             break;
-        }
-        else if (std::cin.fail()) {
+        } else if (std::cin.fail()) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         } else if (!input.empty()) {
+            if (input.find('\t') != std::string::npos) {
+                std::cout << "Field cannot contain tabs. Please try again." << std::endl;
+                continue;
+            }
             break;
         } else
             std::cout << "Field cannot be empty. Please try again." << std::endl;
@@ -61,14 +64,15 @@ int main() {
             if (toExit)
                 break;
 
+
+
             phoneBook.addContact(newContact);
             std::cout << "Contact added successfully!" << std::endl;
         } else if (command == "SEARCH") {
             phoneBook.searchContact(&toExit);
             if (toExit)
                 break;
-        }
-        else if (command == "EXIT") {
+        } else if (command == "EXIT") {
             std::cout << "Goodbye! All your contacts are lost forever!" << std::endl;
             break;
         } else
