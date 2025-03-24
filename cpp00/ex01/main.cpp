@@ -20,6 +20,9 @@ std::string getInput(const std::string& prompt, int *toExit) {
             if (input.find('\t') != std::string::npos) {
                 std::cout << "Field cannot contain tabs. Please try again." << std::endl;
                 continue;
+            } else if (input[0] == ' ') {
+                std::cout << "Field cannot start with space. Please try again." << std::endl;
+                continue;
             }
             break;
         } else
