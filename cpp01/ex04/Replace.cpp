@@ -1,4 +1,6 @@
 #include "Replace.hpp"
+# include <fstream>
+# include <iostream>
 
 Replace::Replace() {}
 

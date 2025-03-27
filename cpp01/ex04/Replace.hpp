@@ -2,8 +2,6 @@
 # define REPLACE_HPP
 
 # include <string>
-# include <fstream>
-# include <iostream>
 
 class Replace {
 public:

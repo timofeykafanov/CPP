@@ -25,22 +25,25 @@ void Harl::error(void) {
     std::cout << "This is unacceptable! I want to speak to the manager now." << std::endl;
 }
 
-void Harl::complain(std::string level) {
-    std::string levels[] = {"DEBUG", "INFO", "WARNING", "ERROR"};
-    
-    ComplaintFunc complaints[] = {
-        &Harl::debug, 
-        &Harl::info, 
-        &Harl::warning, 
-        &Harl::error
-    };
+void Harl::filter(std::string level) {
+    std::string levels[4] = {"DEBUG", "INFO", "WARNING", "ERROR"};
 
-    for (int i = 0; i < 4; ++i) {
-        if (levels[i] == level) {
-            (this->*complaints[i])();
-            return;
-        }
+    int i = 0;
+    while (i < 4 && levels[i] != level) {
+        ++i;
     }
 
-    std::cout << "[ Probably complaining about insignificant problems ]" << std::endl;
+    switch (i) {
+        case 0:
+            debug();
+        case 1:
+            info();
+        case 2:
+            warning();
+        case 3:
+            error();
+            break;
+        default:
+            std::cout << "[ Probably complaining about insignificant problems ]" << std::endl;
+    }
 }
