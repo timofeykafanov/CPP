@@ -8,11 +8,12 @@ CPPFLAGS	= -Wall -Wextra -Werror -std=c++98
 DFLAGS	 	= -MD -MP
 MAKEFLAGS	= -j$(nproc) --no-print-directory
 
-NAME		= point
+NAME		= bsp
 
 SRCS		= main.cpp \
 			  Fixed.cpp \
-			  Point.cpp
+			  Point.cpp \
+			  bsp.cpp
 
 OBJSDIR		= objs
 OBJS		= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.o))

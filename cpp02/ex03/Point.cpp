@@ -27,3 +27,4 @@ Fixed Point::getX() const {
 Fixed Point::getY() const {
     return _y;
 }
+
