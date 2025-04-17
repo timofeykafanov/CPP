@@ -11,7 +11,7 @@ MAKEFLAGS	= -j$(nproc) --no-print-directory
 NAME		= abstractAnimal
 
 SRCS		= main.cpp \
-			  Animal.cpp \
+			  AAnimal.cpp \
 			  Dog.cpp \
 			  Cat.cpp \
 			  WrongAnimal.cpp \

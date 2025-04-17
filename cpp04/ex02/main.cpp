@@ -1,4 +1,4 @@
-#include "Animal.hpp"
+#include "AAnimal.hpp"
 #include "Dog.hpp"
 #include "Cat.hpp"
 #include <iostream>
@@ -6,18 +6,18 @@
 
 int main() {
     std::cout << "===== Basic Test from Subject =====" << std::endl;
-    const Animal* dog = new Dog();
-    const Animal* cat = new Cat();
+    const AAnimal* dog = new Dog();
+    const AAnimal* cat = new Cat();
 
     // const Animal* animal = new Animal();
-    // Animal directAnimal;
+    // AAnimal directAnimal;
     
     delete dog;
     delete cat;
     
     std::cout << "\n===== Array of Animals Test =====" << std::endl;
     const int arraySize = 10;
-    Animal* animals[arraySize];
+    AAnimal* animals[arraySize];
     
     for (int k = 0; k < arraySize; k++) {
         if (k < arraySize / 2) {
