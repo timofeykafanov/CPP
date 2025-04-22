@@ -8,15 +8,14 @@ CPPFLAGS	= -Wall -Wextra -Werror -std=c++98
 DFLAGS	 	= -MD -MP
 MAKEFLAGS	= -j$(nproc) --no-print-directory
 
-NAME		= brain
+NAME		= materia
 
 SRCS		= main.cpp \
-			  Animal.cpp \
-			  Dog.cpp \
-			  Cat.cpp \
-			  WrongAnimal.cpp \
-			  WrongCat.cpp \
-			  Brain.cpp
+			  AMateria.cpp \
+			  Ice.cpp \
+			  Cure.cpp \
+			  Character.cpp \
+			  MateriaSource.cpp
 
 OBJSDIR		= objs
 OBJS		= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.o))
