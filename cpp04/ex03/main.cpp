@@ -57,6 +57,7 @@ void testAdditionalFunctionality() {
     std::cout << "\nTrying to equip a 5th materia:" << std::endl;
     AMateria* m5 = src->createMateria("ice");
     alice->equip(m5);
+    delete m5;
     
     std::cout << "\nCreating Charlie:" << std::endl;
     ICharacter* charlie = new Character("Charlie");
@@ -89,16 +90,17 @@ void testAdditionalFunctionality() {
     aliceCopy->use(0, *charlie);
     
     std::cout << "\nUnequipping from original and checking copy:" << std::endl;
+    AMateria* mat = m1;
     alice->unequip(0);
     alice->use(0, *charlie);
     aliceCopy->use(0, *charlie);
+    delete mat;
     
     std::cout << "\nCleaning up:" << std::endl;
     delete alice;
     delete aliceCopy;
     delete charlie;
     delete src;
-    delete m5;
 }
 
 void testUnknownMateria() {

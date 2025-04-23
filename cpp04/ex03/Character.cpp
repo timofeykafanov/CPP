@@ -18,16 +18,12 @@ Character::Character(std::string const & name) : name(name) {
 Character::Character(const Character& other) : name(other.name) {
     std::cout << "Character copy constructor called" << std::endl;
     for (int i = 0; i < 4; i++) {
-        if (this->inventory[i])
-            delete this->inventory[i];
         this->inventory[i] = NULL;
     }
     
     for (int i = 0; i < 4; i++) {
         if (other.inventory[i])
             this->inventory[i] = other.inventory[i]->clone();
-        else
-            this->inventory[i] = NULL;
     }
 }
 
