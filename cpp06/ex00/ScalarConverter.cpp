@@ -12,14 +12,21 @@ ScalarConverter::ScalarConverter(const ScalarConverter& other) { (void)other; }
 ScalarConverter& ScalarConverter::operator=(const ScalarConverter& other) { (void)other; return *this; }
 ScalarConverter::~ScalarConverter() {}
 
-bool ScalarConverter::isChar(const std::string& literal) {
-    return (literal.length() == 1);
+bool isChar(const std::string& literal) {
+    return (literal.length() == 1 && !isdigit(literal[0]));
 }
 
-bool ScalarConverter::isInt(const std::string& literal) {
+bool isInt(const std::string& literal) {
     if (literal.empty())
         return false;
     
+    int num;
+    std::stringstream ss(literal);
+    ss >> num;
+
+    if (ss.fail())
+        return false;
+
     size_t i = 0;
     if (literal[0] == '-' || literal[0] == '+')
         i++;
@@ -32,8 +39,8 @@ bool ScalarConverter::isInt(const std::string& literal) {
     return true;
 }
 
-bool ScalarConverter::isFloat(const std::string& literal) {
-    if (literal == "nanf" || literal == "+inff" || literal == "-inff")
+bool isFloat(const std::string& literal) {
+    if (literal == "nanf" || literal == "inff" || literal == "+inff" || literal == "-inff")
         return true;
     
     if (literal.length() < 2 || literal[literal.length() - 1] != 'f')
@@ -41,6 +48,13 @@ bool ScalarConverter::isFloat(const std::string& literal) {
     
     std::string temp = literal.substr(0, literal.length() - 1);
     
+    float num;
+    std::stringstream ss(literal);
+    ss >> num;
+
+    if (ss.fail())
+        return false;
+
     bool hasDecimalPoint = false;
     size_t i = 0;
     
@@ -60,9 +74,16 @@ bool ScalarConverter::isFloat(const std::string& literal) {
     return hasDecimalPoint;
 }
 
-bool ScalarConverter::isDouble(const std::string& literal) {
-    if (literal == "nan" || literal == "+inf" || literal == "-inf")
+bool isDouble(const std::string& literal) {
+    if (literal == "nan" || literal == "inf" || literal == "+inf" || literal == "-inf") 
         return true;
+
+    double num;
+    std::stringstream ss(literal);
+    ss >> num;
+
+    if (ss.fail())
+        return false;
     
     bool hasDecimalPoint = false;
     size_t i = 0;
@@ -83,33 +104,33 @@ bool ScalarConverter::isDouble(const std::string& literal) {
     return hasDecimalPoint;
 }
 
-void ScalarConverter::printChar(char c) {
+void printChar(char c) {
     if (isprint(c))
         std::cout << "char: '" << c << "'" << std::endl;
     else
         std::cout << "char: Non displayable" << std::endl;
 }
 
-void ScalarConverter::printInt(int i) {
+void printInt(int i) {
     std::cout << "int: " << i << std::endl;
 }
 
-void ScalarConverter::printFloat(float f) {
+void printFloat(float f) {
     std::cout << "float: " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
 }
 
-void ScalarConverter::printDouble(double d) {
-    std::cout << "double: " << std::fixed << std::setprecision(1) << d << std::endl;
+void printDouble(double d) {
+    std::cout << "double: " << d << std::endl;
 }
 
-void ScalarConverter::convertFromChar(char c) {
+void convertFromChar(char c) {
     printChar(c);
     printInt(static_cast<int>(c));
     printFloat(static_cast<float>(c));
     printDouble(static_cast<double>(c));
 }
 
-void ScalarConverter::convertFromInt(int i) {
+void convertFromInt(int i) {
     if (i >= 0 && i <= 127)
         printChar(static_cast<char>(i));
     else
@@ -120,7 +141,7 @@ void ScalarConverter::convertFromInt(int i) {
     printDouble(static_cast<double>(i));
 }
 
-void ScalarConverter::convertFromFloat(float f) {
+void convertFromFloat(float f) {
     if (std::isnan(f) || std::isinf(f) || f < 0 || f > 127)
         std::cout << "char: impossible" << std::endl;
     else
@@ -134,7 +155,7 @@ void ScalarConverter::convertFromFloat(float f) {
     printDouble(static_cast<double>(f));
 }
 
-void ScalarConverter::convertFromDouble(double d) {
+void convertFromDouble(double d) {
     if (std::isnan(d) || std::isinf(d) || d < 0 || d > 127)
         std::cout << "char: impossible" << std::endl;
     else
@@ -145,7 +166,9 @@ void ScalarConverter::convertFromDouble(double d) {
     else
         printInt(static_cast<int>(d));
     
-    if (d > std::numeric_limits<float>::max() || d < -std::numeric_limits<float>::max())
+    if (std::isnan(d) || std::isinf(d))
+        printFloat(static_cast<float>(d));
+    else if (d > std::numeric_limits<float>::max() || d < -std::numeric_limits<float>::max())
         std::cout << "float: impossible" << std::endl;
     else
         printFloat(static_cast<float>(d));
@@ -160,7 +183,7 @@ void ScalarConverter::convert(const std::string& literal) {
     }
     else if (isInt(literal)) {
         int i;
-        std::istringstream iss(literal);
+        std::stringstream iss(literal);
         iss >> i;
         convertFromInt(i);
     }
@@ -168,6 +191,8 @@ void ScalarConverter::convert(const std::string& literal) {
         float f;
         if (literal == "nanf")
             f = std::numeric_limits<float>::quiet_NaN();
+        else if (literal == "inff")
+            f = std::numeric_limits<float>::infinity();
         else if (literal == "+inff")
             f = std::numeric_limits<float>::infinity();
         else if (literal == "-inff")
@@ -182,6 +207,8 @@ void ScalarConverter::convert(const std::string& literal) {
         double d;
         if (literal == "nan")
             d = std::numeric_limits<double>::quiet_NaN();
+        else if (literal == "inf")
+            d = std::numeric_limits<double>::infinity();
         else if (literal == "+inf")
             d = std::numeric_limits<double>::infinity();
         else if (literal == "-inf")
@@ -191,7 +218,9 @@ void ScalarConverter::convert(const std::string& literal) {
         convertFromDouble(d);
     }
     else {
-        double d = std::strtod(literal.c_str(), NULL);
-        convertFromDouble(d);
+        std::cout << "char: impossible" << std::endl;
+        std::cout << "int: impossible" << std::endl;
+        std::cout << "float: impossible" << std::endl;
+        std::cout << "double: impossible" << std::endl;
     }
 }
