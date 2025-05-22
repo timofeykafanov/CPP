@@ -9,10 +9,10 @@ int main(int argc, char **argv) {
     }
 
     BitcoinExchange bitcoinExchange;
-
+    
+    // Database is loaded in constructor, but we can handle errors from parseFile
     try {
         bitcoinExchange.parseFile(argv[1]);
-        // bitcoinExchange.calculateExchangeRate("2023-10-01", 100.0);
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
