@@ -18,4 +18,4 @@ public:
     double calculate(const std::string &expression);
 };
 
-#endif
+#endif // RPN_HPP
