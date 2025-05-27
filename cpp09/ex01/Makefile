@@ -8,10 +8,10 @@ CPPFLAGS	= -Wall -Wextra -Werror -std=c++98
 DFLAGS	 	= -MD -MP
 MAKEFLAGS	= -j$(nproc) --no-print-directory
 
-NAME		= PmergeMe
+NAME		= RPN
 
 SRCS		= main.cpp \
-			  PmergeMe.cpp \
+			  RPN.cpp \
 			  
 OBJSDIR		= objs
 OBJS		= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.o))
