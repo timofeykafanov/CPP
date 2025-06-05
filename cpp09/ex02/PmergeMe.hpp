@@ -25,15 +25,55 @@ public:
     
     template <typename Out, typename In>
     Out generateSequence(In &container);
-    
+
+    template <typename T>
+    void recursionPairing(T& container);
+
     template <typename T>
     void mergeInsert(T& container);
 };
 
 template <typename T>
+void PmergeMe::recursionPairing(T& container) {
+    if (container.size() == 1)
+        return;
+
+    T bigger;
+    size_t i = 0;
+    int n = 0;
+    while (i < container.size() - 1) {
+        if (i == container.size() - 1) {
+            // bigger.push_back(container[i]);
+            break;
+        }
+        if (container[i] > container[i + 1])
+            std::swap(container[i], container[i + 1]);
+        container[i].push_back(n);
+        container[i + 1].push_back(n);
+        bigger.push_back(container[i + 1]);
+        i += 2;
+        ++n;
+    }
+    std::cout << "bigger: ";
+    for (typename T::iterator it = bigger.begin(); it != bigger.end(); ++it) {
+        std::cout << "[";
+        for (typename T::value_type::iterator jt = it->begin(); jt != it->end(); ++jt) {
+            std::cout << *jt;
+            if (jt + 1 != it->end())
+            std::cout << " ";
+        }
+        std::cout << "]";
+        if (it + 1 != bigger.end())
+        std::cout << " ";
+    }
+    std::cout << std::endl;
+    recursionPairing(bigger);
+}
+
+template <typename T>
 void PmergeMe::mergeInsert(T& container) {
-    (void)container; // Suppress unused parameter warning
-    
+    // (void)container; // Suppress unused parameter warning
+    recursionPairing(container);
 }
 
 template <typename Out, typename In>
