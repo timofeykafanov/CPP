@@ -7,6 +7,8 @@
 
 class PmergeMe {
 private:
+    std::vector<std::vector<int> > vector;
+    std::deque<std::deque<int> > deque;
     std::vector<int> indicesVector;
     std::deque<int> indicesDeque;
 
@@ -15,13 +17,15 @@ private:
     PmergeMe& operator=(const PmergeMe& other);
 
 public:
-    std::vector<std::vector<int> > vector;
-    std::deque<std::deque<int> > deque;
     PmergeMe(int argc, char** argv);
     ~PmergeMe();
+
+    void sortVector() { mergeInsert(vector); }
+    void sortDeque() { mergeInsert(deque); }
     
     template <typename Out, typename In>
     Out generateSequence(In &container);
+    
     template <typename T>
     void mergeInsert(T& container);
 };
