@@ -39,72 +39,8 @@ PmergeMe::PmergeMe(int argc, char** argv) {
         deque.push_back(tempDeq);
     }
 
-    generateSequence();
+    indicesVector = generateSequence<std::vector<int> >(vector);
+    indicesDeque = generateSequence<std::deque<int> >(deque);
 }
 
-void PmergeMe::generateSequence(void) {
-    int n = vector.size() / 2 + vector.size() % 2;
-    int secLastJacob = 1;
-    int lastJacob = 1;
-    if (n > 0) {
-        int jacob = 1;
-        int j1 = jacob, j2 = 0, filler = 0;
-        while (true) {
-            jacob = j1 + 2 * j2;
-            indexes.push_back(jacob);
-            j2 = j1;
-            j1 = jacob;
-            secLastJacob = j2 - 1;
-            lastJacob = j1 - 1;
-            filler = jacob - 1;
-            while (filler > j2){
-                indexes.push_back(filler);
-                --filler;
-            }
-            if (jacob >= n)
-                break;
-        }
 
-        for (size_t i = 0; i < indexes.size(); ++i) {
-            if ((int)i >= n)
-                indexes.pop_back(), i--;
-            else
-                indexes[i]--;
-        }
-    }
-
-    int count = 0;
-    size_t i = indexes.size() - 1;
-    int last = indexes[i];
-    int curr = indexes[i - 1];
-    int next = last;
-
-    if (lastJacob == last) {
-        indexes[i] = secLastJacob + 1;
-    } else if (last != secLastJacob + 1) {
-        while (i > 0) {
-            if (curr - 1 == next) {
-                curr = indexes[i - 1];
-                next = indexes[i];
-                ++count;
-                --i;
-            } else {
-                ++i;
-                break;
-            }
-        }
-        
-        while (i < indexes.size()) {
-            indexes[i] = indexes[i] - secLastJacob + count;
-            ++i;
-        }
-    }
-
-    std::cout << "Jacobsthal indexes: ";
-    for (size_t i = 0; i < indexes.size(); ++i) {
-        std::cout << indexes[i];
-        if (i != indexes.size() - 1)
-            std::cout << " ";
-    }
-    std::cout << std::endl;
-}
