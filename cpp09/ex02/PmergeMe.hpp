@@ -42,10 +42,7 @@ void PmergeMe::recursionPairing(T& container) {
     size_t i = 0;
     int n = 0;
     while (i < container.size() - 1) {
-        if (i == container.size() - 1) {
-            // bigger.push_back(container[i]);
-            break;
-        }
+        if (i == container.size() - 1) break;
         if (container[i] > container[i + 1])
             std::swap(container[i], container[i + 1]);
         container[i].push_back(n);
