@@ -9,8 +9,11 @@ class PmergeMe {
 private:
     std::vector<std::vector<int> > vector;
     std::deque<std::deque<int> > deque;
+    std::vector<std::vector<int> > biggerVector;
+    std::deque<std::deque<int> > biggerDeque;
     std::vector<int> indicesVector;
     std::deque<int> indicesDeque;
+    int counter;
 
     PmergeMe();
     PmergeMe(const PmergeMe& other);
@@ -20,37 +23,45 @@ public:
     PmergeMe(int argc, char** argv);
     ~PmergeMe();
 
-    void sortVector() { mergeInsert(vector); }
-    void sortDeque() { mergeInsert(deque); }
+    void sortVector() { mergeInsert(vector, biggerVector); }
+    void sortDeque() { mergeInsert(deque, biggerDeque); }
     
     template <typename Out, typename In>
     Out generateSequence(In &container);
 
     template <typename T>
-    void recursionPairing(T& container);
+    void recursionPairing(T& container, T& biggerContainer);
 
     template <typename T>
-    void mergeInsert(T& container);
+    void mergeInsert(T& container, T& biggerContainer);
 };
 
 template <typename T>
-void PmergeMe::recursionPairing(T& container) {
+void PmergeMe::recursionPairing(T& container, T& biggerContainer) {
     if (container.size() == 1)
         return;
 
     T bigger;
+    static int level = 1;
+    std::cout << "\nRecursion level: " << level << "  ++++++++++++++++++++++++++++++++++++" << std::endl;
     size_t i = 0;
     int n = 0;
-    while (i < container.size() - 1) {
-        if (i == container.size() - 1) break;
-        if (container[i] > container[i + 1])
+
+    while (i <= container.size() - 1) {
+        ++counter;
+        if (container[i] > container[i + 1]) {
             std::swap(container[i], container[i + 1]);
-        container[i].push_back(n);
-        container[i + 1].push_back(n);
+        }
+        if (level == 1) {
+            container[i].push_back(n);
+            container[i + 1].push_back(n);
+        }
         bigger.push_back(container[i + 1]);
+        bigger[n].push_back(n / 2);
         i += 2;
         ++n;
     }
+
     std::cout << "bigger: ";
     for (typename T::iterator it = bigger.begin(); it != bigger.end(); ++it) {
         std::cout << "[";
@@ -64,13 +75,72 @@ void PmergeMe::recursionPairing(T& container) {
         std::cout << " ";
     }
     std::cout << std::endl;
-    recursionPairing(bigger);
+    
+    ++level;
+    recursionPairing(bigger, biggerContainer);
+    --level;
+
+    std::cout << "\nRecursion level: " << level << "  -----------------------------------------------------" << std::endl;
+
+    if (bigger.size() == 1) {
+        biggerContainer.push_back(bigger[0]);
+    } else {
+        i = 0;
+        while (i <= bigger.size() - 1) {
+            size_t j = 0;
+            while (j < biggerContainer.size()) {
+                if (bigger[i] == biggerContainer[j]) {
+                    ++j;
+                    std::cout << "\n\nSkipping equal element\n\n" << std::endl;
+                    continue;
+                }
+                if (bigger[i].back() == biggerContainer[j].back()) {
+                    if (i == 0) {
+                        std::cout << "Inserting 0000000000" << std::endl;
+                        biggerContainer.insert(biggerContainer.begin(), bigger[i]);
+                        break;
+                    }
+                    else {
+                        std::cout << "Inserting 11111111111" << std::endl;
+                        biggerContainer.insert(biggerContainer.begin() + i - 1, bigger[i]);
+                        break;
+                    }
+                }
+                ++j;
+            }
+            
+            i += 2;
+        }
+        
+    }
+
+    size_t k = 0;
+    while (k <= biggerContainer.size() - 1 && biggerContainer[k].size() > 1) {
+        biggerContainer[k].pop_back();
+        ++k;
+    }
+
+    std::cout << "biggerContainer: ";
+    for (typename T::iterator it = biggerContainer.begin(); it != biggerContainer.end(); ++it) {
+        std::cout << "[";
+        for (typename T::value_type::iterator jt = it->begin(); jt != it->end(); ++jt) {
+            std::cout << *jt;
+            if (jt + 1 != it->end())
+            std::cout << " ";
+        }
+        std::cout << "]";
+        if (it + 1 != biggerContainer.end())
+        std::cout << " ";
+    }
+    std::cout << std::endl;
 }
 
 template <typename T>
-void PmergeMe::mergeInsert(T& container) {
+void PmergeMe::mergeInsert(T& container, T& biggerContainer) {
     // (void)container; // Suppress unused parameter warning
-    recursionPairing(container);
+    counter = 0;
+    recursionPairing(container, biggerContainer);
+    std::cout << "Number of comparisons: " << counter << std::endl;
 }
 
 template <typename Out, typename In>
