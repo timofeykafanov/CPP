@@ -43,4 +43,10 @@ PmergeMe::PmergeMe(int argc, char** argv) {
     indicesDeque = generateSequence<std::deque<int> >(deque);
 }
 
+void PmergeMe::sortVector() {
+    mergeInsert(vector, biggerVector, indicesVector);
+}
 
+void PmergeMe::sortDeque() {
+    mergeInsert(deque, biggerDeque, indicesDeque);
+}

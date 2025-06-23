@@ -23,25 +23,26 @@ public:
     PmergeMe(int argc, char** argv);
     ~PmergeMe();
 
-    void sortVector() { mergeInsert(vector, biggerVector); }
-    void sortDeque() { mergeInsert(deque, biggerDeque); }
+    void sortVector();
+    void sortDeque();
     
     template <typename Out, typename In>
     Out generateSequence(In &container);
 
-    template <typename T>
-    void recursionPairing(T& container, T& biggerContainer);
+    template <typename T, typename U>
+    T recursionPairing(T& container, T& biggerContainer, U &indices);
 
-    template <typename T>
-    void mergeInsert(T& container, T& biggerContainer);
+    template <typename T, typename U>
+    void mergeInsert(T& container, T& biggerContainer, U &indices);
 };
 
-template <typename T>
-void PmergeMe::recursionPairing(T& container, T& biggerContainer) {
+template <typename T, typename U>
+T PmergeMe::recursionPairing(T& container, T& biggerContainer, U &indices) {
     if (container.size() == 1)
-        return;
+        return container;
 
     T bigger;
+    U biggerIndices;
     static int level = 1;
     std::cout << "\nRecursion level: " << level << "  ++++++++++++++++++++++++++++++++++++" << std::endl;
     size_t i = 0;
@@ -77,7 +78,7 @@ void PmergeMe::recursionPairing(T& container, T& biggerContainer) {
     std::cout << std::endl;
     
     ++level;
-    recursionPairing(bigger, biggerContainer);
+    recursionPairing(bigger, biggerContainer, indices);
     --level;
 
     std::cout << "\nRecursion level: " << level << "  -----------------------------------------------------" << std::endl;
@@ -132,14 +133,55 @@ void PmergeMe::recursionPairing(T& container, T& biggerContainer) {
         std::cout << " ";
     }
     std::cout << std::endl;
+
+    return biggerContainer;
 }
 
-template <typename T>
-void PmergeMe::mergeInsert(T& container, T& biggerContainer) {
-    // (void)container; // Suppress unused parameter warning
+template <typename T, typename U>
+void PmergeMe::mergeInsert(T& container, T& biggerContainer, U &indices) {
     counter = 0;
-    recursionPairing(container, biggerContainer);
-    std::cout << "Number of comparisons: " << counter << std::endl;
+    T bigger;
+    T smaller;
+    bigger = recursionPairing(container, biggerContainer, indices);
+
+    size_t i = 0;
+    while (i < container.size()) {
+        smaller.push_back(container[i]);
+        i += 2;
+    }
+
+    i = 0;
+    while (i <= smaller.size() - 1) {
+        size_t j = 0;
+        while (j < bigger.size()) {
+            if (bigger[j].back() == smaller[indices[i]].back()) {
+                size_t left = 0;
+                size_t right = j;
+                while (left < right) {
+                    size_t mid = left + (right - left) / 2;
+                    ++counter;
+                    if (bigger[mid][0] < smaller[indices[i]][0]) {
+                        left = mid + 1;
+                    } else {
+                        right = mid;
+                    }
+                }
+
+                bigger.insert(bigger.begin() + left, smaller[indices[i]]);
+                break;
+            }
+            ++j;
+        }
+        ++i;
+    }
+
+    std::cout << "\nFinal sequence: ";
+    for (typename T::iterator it = bigger.begin(); it != bigger.end(); ++it) {
+        std::cout << (*it)[0] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "\nNumber of comparisons: " << counter << std::endl;
 }
 
 template <typename Out, typename In>
