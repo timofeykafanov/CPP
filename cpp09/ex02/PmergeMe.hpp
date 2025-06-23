@@ -89,22 +89,21 @@ void PmergeMe::recursionPairing(T& container, T& biggerContainer) {
         while (i <= bigger.size() - 1) {
             size_t j = 0;
             while (j < biggerContainer.size()) {
-                if (bigger[i] == biggerContainer[j]) {
-                    ++j;
-                    std::cout << "\n\nSkipping equal element\n\n" << std::endl;
-                    continue;
-                }
                 if (bigger[i].back() == biggerContainer[j].back()) {
-                    if (i == 0) {
-                        std::cout << "Inserting 0000000000" << std::endl;
-                        biggerContainer.insert(biggerContainer.begin(), bigger[i]);
-                        break;
+                    size_t left = 0;
+                    size_t right = j;
+                    while (left < right) {
+                        size_t mid = left + (right - left) / 2;
+                        ++counter;
+                        if (biggerContainer[mid][0] < bigger[i][0]) {
+                            left = mid + 1;
+                        } else {
+                            right = mid;
+                        }
                     }
-                    else {
-                        std::cout << "Inserting 11111111111" << std::endl;
-                        biggerContainer.insert(biggerContainer.begin() + i - 1, bigger[i]);
-                        break;
-                    }
+
+                    biggerContainer.insert(biggerContainer.begin() + left, bigger[i]);
+                    break;
                 }
                 ++j;
             }
