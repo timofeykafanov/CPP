@@ -39,8 +39,8 @@ PmergeMe::PmergeMe(int argc, char** argv) {
         deque.push_back(tempDeq);
     }
 
-    indicesVector = generateSequence<std::vector<int> >(vector);
-    indicesDeque = generateSequence<std::deque<int> >(deque);
+    indicesVector = generateSequence<std::vector<int> >(vector.size() / 2 + vector.size() % 2);
+    indicesDeque = generateSequence<std::deque<int> >(deque.size() / 2 + deque.size() % 2);
 }
 
 void PmergeMe::sortVector() {
