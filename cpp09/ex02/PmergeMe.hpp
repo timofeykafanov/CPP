@@ -130,7 +130,7 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer, U &indices) {
                     std::cout << "Inserting smaller[" << smaller[smallerIndices[i]][0] << "] into biggerContainer at position " << j << " ; i = " << i <<  std::endl;
                     size_t left = 0;
                     size_t right = j;
-                    if (smaller.size() > size && i == smaller.size() - 1)
+                    if (smaller.size() > size && smallerIndices[i] == (int)smaller.size() - 1)
                         right = biggerContainer.size() - 1;
                     while (left < right) {
                         size_t mid = left + (right - left) / 2;
@@ -196,6 +196,8 @@ void PmergeMe::mergeInsert(T& container, T& biggerContainer, U &indices) {
             if (bigger[j][1] == smaller[indices[i]][1]) {
                 size_t left = 0;
                 size_t right = j;
+                if (indices[i] == (int)smaller.size() - 1)
+                    right = bigger.size();
                 while (left < right) {
                     size_t mid = left + (right - left) / 2;
                     ++counter;
