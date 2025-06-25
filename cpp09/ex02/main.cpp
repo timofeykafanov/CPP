@@ -21,8 +21,10 @@ int main(int argc, char** argv) {
         end = std::clock();
         elapsedDeque = (end - start);
 
-        std::cout << "\nSorting using Vector took " << elapsedVector << " microseconds." << std::endl;
-        std::cout << "Sorting using Deque took " << elapsedDeque << " microseconds.\n" << std::endl;
+        std::cout << "\nTime to process a range of " << pmerge.getVectorSize() << " elements with std::vector : " << elapsedVector << " microseconds." << std::endl;
+        std::cout << "Time to process a range of " << pmerge.getDequeSize() << " elements with std::deque : " << elapsedDeque << " microseconds.\n" << std::endl;
+
+        std::cout << "Number of comparisons: " << pmerge.getCounter() << "\n" << std::endl;
 
     } catch (const std::invalid_argument &e) {
         std::cerr << "Error: " << e.what() << std::endl;

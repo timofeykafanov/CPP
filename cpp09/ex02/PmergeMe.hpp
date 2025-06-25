@@ -23,6 +23,10 @@ public:
 
     void sortVector();
     void sortDeque();
+
+    int getCounter() const { return counter; }
+    int getVectorSize() const { return vector.size(); }
+    int getDequeSize() const { return deque.size(); }
     
     template <typename Out>
     Out generateSequence(size_t length);
@@ -146,9 +150,8 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer) {
     
     if (bigger.size() == 1) {
         biggerContainer.push_back(bigger[0]);
-    } else {
+    } else
         bynaryInsertionSort(biggerContainer, smaller, smallerIndices);
-    }
 
     size_t k = 0;
     while (k <= biggerContainer.size() - 1 && biggerContainer[k].size() > 1) {
@@ -162,9 +165,16 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer) {
 template <typename T, typename U>
 void PmergeMe::mergeInsert(T& container, T& biggerContainer) {
     counter = 0;
-    T biggerSorted;
+    T sorted;
     T smaller;
-    biggerSorted = recursionPairing<T, U>(container, biggerContainer);
+
+    std::cout << "\nBefore: ";
+    for (typename T::iterator it = container.begin(); it != container.end(); ++it) {
+        std::cout << (*it)[0] << " ";
+    }
+    std::cout << std::endl;
+
+    sorted = recursionPairing<T, U>(container, biggerContainer);
 
     size_t i = 0;
     while (i < container.size()) {
@@ -175,17 +185,15 @@ void PmergeMe::mergeInsert(T& container, T& biggerContainer) {
     U smallerIndices = generateSequence<U>(smaller.size());
 
 
-    smaller = reorderSequence<T, U>(smaller, biggerSorted);
+    smaller = reorderSequence<T, U>(smaller, sorted);
 
-    bynaryInsertionSort(biggerSorted, smaller, smallerIndices);
+    bynaryInsertionSort(sorted, smaller, smallerIndices);
 
-    std::cout << "\nFinal sequence: ";
-    for (typename T::iterator it = biggerSorted.begin(); it != biggerSorted.end(); ++it) {
+    std::cout << "After: ";
+    for (typename T::iterator it = sorted.begin(); it != sorted.end(); ++it) {
         std::cout << (*it)[0] << " ";
     }
     std::cout << std::endl;
-
-    std::cout << "\nNumber of comparisons: " << counter << std::endl;
 }
 
 template <typename Out>
