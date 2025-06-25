@@ -62,8 +62,14 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer, U &indices) {
         ++n;
     }
 
-    if (container.size() % 2 == 1)
-        container[i][level] = -1;
+    std::cout << "Current counter: " << counter << std::endl;
+
+    if (container.size() % 2 == 1) {
+        if (level == 1)
+            container[i].push_back(-1);
+        else
+            container[i][level] = -1;
+    }
 
     ++level;
     recursionPairing(bigger, biggerContainer, indices);
@@ -108,7 +114,8 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer, U &indices) {
         while (i < smaller.size()) {
             size_t j = 0;
             while (j < biggerContainer.size()) {
-                if (smaller[smallerIndices[i]].back() == -1 || smaller[smallerIndices[i]].back() == biggerContainer[j].back()) {
+                if (smaller[smallerIndices[i]].back() == -1
+                    || smaller[smallerIndices[i]].back() == biggerContainer[j].back()) {
                     size_t left = 0;
                     size_t right = j;
                     if (smaller[smallerIndices[i]].back() == -1)
@@ -183,13 +190,11 @@ void PmergeMe::mergeInsert(T& container, T& biggerContainer, U &indices) {
     while (i < smaller.size()) {
         size_t j = 0;
         while (j < biggerSorted.size()) {
-            if (biggerSorted[j][1] == smaller[smallerIndices[i]][1]
-                || smallerIndices[i] == - 1) {
+            if (smaller[smallerIndices[i]][1] == - 1
+                || biggerSorted[j][1] == smaller[smallerIndices[i]][1]) {
                 size_t left = 0;
                 size_t right = j;
-                if (smallerIndices[i] == - 1)
-                    right = biggerSorted.size();
-                if (smallerIndices[i] == (int)smaller.size() - 1)
+                if (smaller[smallerIndices[i]][1] == - 1)
                     right = biggerSorted.size();
                 while (left < right) {
                     size_t mid = left + (right - left) / 2;
