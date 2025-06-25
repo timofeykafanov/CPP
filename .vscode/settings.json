@@ -56,7 +56,8 @@
         "list": "cpp",
         "*.tpp": "cpp",
         "map": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "ratio": "cpp"
     },
     "C_Cpp.default.compilerPath": "/usr/bin/clang++"
 }

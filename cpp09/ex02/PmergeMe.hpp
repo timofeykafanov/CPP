@@ -44,7 +44,6 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer, U &indices) {
     T bigger;
     U biggerIndices;
     static int level = 1;
-    std::cout << "\nRecursion level: " << level << "  +++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
     size_t i = 0;
     int n = 0;
 
@@ -63,25 +62,12 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer, U &indices) {
         ++n;
     }
 
-    std::cout << "bigger: ";
-    for (typename T::iterator it = bigger.begin(); it != bigger.end(); ++it) {
-        std::cout << "[";
-        for (typename T::value_type::iterator jt = it->begin(); jt != it->end(); ++jt) {
-            std::cout << *jt;
-            if (jt + 1 != it->end())
-            std::cout << " ";
-        }
-        std::cout << "]";
-        if (it + 1 != bigger.end())
-        std::cout << " ";
-    }
-    std::cout << std::endl;
-    
+    if (container.size() % 2 == 1)
+        container[i][level] = -1;
+
     ++level;
     recursionPairing(bigger, biggerContainer, indices);
     --level;
-
-    std::cout << "\nRecursion level: " << level << "  -----------------------------------------------------" << std::endl;
 
     T smaller;
     
@@ -93,30 +79,28 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer, U &indices) {
     
     U smallerIndices = generateSequence<U>(smaller.size());
     
-    size_t size = biggerContainer.size();
+    T reorderedSmaller;
+    std::vector<bool> used(smaller.size(), false);
 
-    std::cout << "\nsmallerIndices: ";
-    for (typename U::iterator it = smallerIndices.begin(); it != smallerIndices.end(); ++it) {
-        std::cout << *it;
-        if (it + 1 != smallerIndices.end())
-            std::cout << " ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "\nsmaller: ";
-    for (typename T::iterator it = smaller.begin(); it != smaller.end(); ++it) {
-        std::cout << "[";
-        for (typename T::value_type::iterator jt = it->begin(); jt != it->end(); ++jt) {
-            std::cout << *jt;
-            if (jt + 1 != it->end())
-                std::cout << " ";
+    for (size_t b = 0; b < biggerContainer.size(); ++b) {
+        int second = biggerContainer[b][1];
+        for (size_t s = 0; s < smaller.size(); ++s) {
+            if (!used[s] && smaller[s][1] == second) {
+                reorderedSmaller.push_back(smaller[s]);
+                used[s] = true;
+                break;
+            }
         }
-        std::cout << "]";
-        if (it + 1 != smaller.end())
-            std::cout << " ";
     }
-    std::cout << std::endl;
 
+    for (size_t s = 0; s < smaller.size(); ++s) {
+        if (!used[s]) {
+            reorderedSmaller.push_back(smaller[s]);
+        }
+    }
+
+    smaller = reorderedSmaller;
+    
     if (bigger.size() == 1) {
         biggerContainer.push_back(bigger[0]);
     } else {
@@ -124,14 +108,11 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer, U &indices) {
         while (i < smaller.size()) {
             size_t j = 0;
             while (j < biggerContainer.size()) {
-                std::cout << "Condition:" << (smaller.size() > size && i == smaller.size() - 1) << std::endl;
-                if (smaller[smallerIndices[i]].back() == biggerContainer[j].back()
-                    || (smaller.size() > size && smallerIndices[i] == (int)smaller.size() - 1)) {
-                    std::cout << "Inserting smaller[" << smaller[smallerIndices[i]][0] << "] into biggerContainer at position " << j << " ; i = " << i <<  std::endl;
+                if (smaller[smallerIndices[i]].back() == -1 || smaller[smallerIndices[i]].back() == biggerContainer[j].back()) {
                     size_t left = 0;
                     size_t right = j;
-                    if (smaller.size() > size && smallerIndices[i] == (int)smaller.size() - 1)
-                        right = biggerContainer.size() - 1;
+                    if (smaller[smallerIndices[i]].back() == -1)
+                        right = biggerContainer.size();
                     while (left < right) {
                         size_t mid = left + (right - left) / 2;
                         ++counter;
@@ -158,29 +139,15 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer, U &indices) {
         ++k;
     }
 
-    std::cout << "\nbiggerContainer 2: ";
-    for (typename T::iterator it = biggerContainer.begin(); it != biggerContainer.end(); ++it) {
-        std::cout << "[";
-        for (typename T::value_type::iterator jt = it->begin(); jt != it->end(); ++jt) {
-            std::cout << *jt;
-            if (jt + 1 != it->end())
-            std::cout << " ";
-        }
-        std::cout << "]";
-        if (it + 1 != biggerContainer.end())
-        std::cout << " ";
-    }
-    std::cout << std::endl;
-
     return biggerContainer;
 }
 
 template <typename T, typename U>
 void PmergeMe::mergeInsert(T& container, T& biggerContainer, U &indices) {
     counter = 0;
-    T bigger;
+    T biggerSorted;
     T smaller;
-    bigger = recursionPairing(container, biggerContainer, indices);
+    biggerSorted = recursionPairing(container, biggerContainer, indices);
 
     size_t i = 0;
     while (i < container.size()) {
@@ -188,27 +155,53 @@ void PmergeMe::mergeInsert(T& container, T& biggerContainer, U &indices) {
         i += 2;
     }
 
+    U smallerIndices = generateSequence<U>(smaller.size());
+
+    T reorderedSmaller;
+    U used(smaller.size(), 0);
+
+    for (size_t b = 0; b < biggerSorted.size(); ++b) {
+        int second = biggerSorted[b][1];
+        for (size_t s = 0; s < smaller.size(); ++s) {
+            if (!used[s] && smaller[s][1] == second) {
+                reorderedSmaller.push_back(smaller[s]);
+                used[s] = 1;
+                break;
+            }
+        }
+    }
+
+    for (size_t s = 0; s < smaller.size(); ++s) {
+        if (!used[s]) {
+            reorderedSmaller.push_back(smaller[s]);
+        }
+    }
+
+    smaller = reorderedSmaller;
+
     i = 0;
-    while (i <= smaller.size() - 1) {
-        std::cout << "\nInserting smaller[" << smaller[indices[i]][0] << "] = ";
+    while (i < smaller.size()) {
         size_t j = 0;
-        while (j < bigger.size()) {
-            if (bigger[j][1] == smaller[indices[i]][1]) {
+        while (j < biggerSorted.size()) {
+            if (biggerSorted[j][1] == smaller[smallerIndices[i]][1]
+                || smallerIndices[i] == - 1) {
                 size_t left = 0;
                 size_t right = j;
-                if (indices[i] == (int)smaller.size() - 1)
-                    right = bigger.size();
+                if (smallerIndices[i] == - 1)
+                    right = biggerSorted.size();
+                if (smallerIndices[i] == (int)smaller.size() - 1)
+                    right = biggerSorted.size();
                 while (left < right) {
                     size_t mid = left + (right - left) / 2;
                     ++counter;
-                    if (bigger[mid][0] < smaller[indices[i]][0]) {
+                    if (biggerSorted[mid][0] < smaller[smallerIndices[i]][0]) {
                         left = mid + 1;
                     } else {
                         right = mid;
                     }
                 }
 
-                bigger.insert(bigger.begin() + left, smaller[indices[i]]);
+                biggerSorted.insert(biggerSorted.begin() + left, smaller[smallerIndices[i]]);
                 break;
             }
             ++j;
@@ -217,25 +210,26 @@ void PmergeMe::mergeInsert(T& container, T& biggerContainer, U &indices) {
     }
 
     std::cout << "\nFinal sequence: ";
-    for (typename T::iterator it = bigger.begin(); it != bigger.end(); ++it) {
+    for (typename T::iterator it = biggerSorted.begin(); it != biggerSorted.end(); ++it) {
         std::cout << (*it)[0] << " ";
     }
     std::cout << std::endl;
 
     std::cout << "\nInitial length: " << container.size() << std::endl;
-    std::cout << "\nFinal length: " << bigger.size() << std::endl;
+    std::cout << "\nFinal length: " << biggerSorted.size() << std::endl;
 
     std::cout << "\nNumber of comparisons: " << counter << std::endl;
 }
 
 template <typename Out>
 Out PmergeMe::generateSequence(size_t length) {
+    if (length == 0)
+        throw std::invalid_argument("Length must be greater than 0.");
     Out indices;
     if (length == 1) {
-        indices.push_back(0); // Return sequence with a single element 0
+        indices.push_back(0);
         return indices;
     }
-    // size_t n = length;
     int secLastJacob = 1;
     int lastJacob = 1;
     if (length > 0) {
@@ -265,30 +259,10 @@ Out PmergeMe::generateSequence(size_t length) {
         }
     }
 
-    int count = 0;
-    size_t i = indices.size() - 1;
-    int last = indices[i];
-    int curr = indices[i - 1];
-    int next = last;
-
-    if (lastJacob == last) {
-        indices[i] = secLastJacob + 1;
-    } else if (last != secLastJacob + 1) {
-        while (i > 0) {
-            if (curr - 1 == next) {
-                curr = indices[i - 1];
-                next = indices[i];
-                ++count;
-                --i;
-            } else {
-                ++i;
-                break;
-            }
-        }
-        
-        while (i < indices.size()) {
-            indices[i] = indices[i] - secLastJacob + count;
-            ++i;
+    for (size_t i = 0; i < indices.size(); ++i) {
+        if (indices[i] >= (int)length) {
+            indices[i] = (int)length - 1;
+            --length;
         }
     }
 
