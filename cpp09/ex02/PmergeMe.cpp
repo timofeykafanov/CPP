@@ -41,9 +41,6 @@ PmergeMe::PmergeMe(int argc, char** argv) {
 
     if (vector.empty() || deque.empty())
         throw std::invalid_argument("Input cannot be empty.");
-
-    indicesVector = generateSequence<std::vector<int> >(vector.size() / 2 + vector.size() % 2);
-    indicesDeque = generateSequence<std::deque<int> >(deque.size() / 2 + deque.size() % 2);
 }
 
 void PmergeMe::sortVector() {

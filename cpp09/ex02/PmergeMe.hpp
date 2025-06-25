@@ -11,8 +11,6 @@ private:
     std::deque<std::deque<int> > deque;
     std::vector<std::vector<int> > biggerVector;
     std::deque<std::deque<int> > biggerDeque;
-    std::vector<int> indicesVector;
-    std::deque<int> indicesDeque;
     int counter;
 
     PmergeMe();
