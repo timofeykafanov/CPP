@@ -47,9 +47,9 @@ PmergeMe::PmergeMe(int argc, char** argv) {
 }
 
 void PmergeMe::sortVector() {
-    mergeInsert(vector, biggerVector, indicesVector);
+    mergeInsert<std::vector<std::vector<int> >, std::vector<int> >(vector, biggerVector);
 }
 
 void PmergeMe::sortDeque() {
-    mergeInsert(deque, biggerDeque, indicesDeque);
+    mergeInsert<std::deque<std::deque<int> >, std::deque<int> >(deque, biggerDeque);
 }
