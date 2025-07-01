@@ -134,7 +134,7 @@ void BitcoinExchange::parseFile(const std::string &input) {
     while (std::getline(file, line)) {
         if (isFirstLine) {
             isFirstLine = false;
-            if (line.find("date") != std::string::npos || line.find("value") != std::string::npos) {
+            if (line.find("date | value") != std::string::npos) {
                 continue;
             }
         }
@@ -216,6 +216,8 @@ void BitcoinExchange::calculateExchangeRate(const std::string &date, double amou
     
     std::map<std::string, double>::iterator it = exchangeRates.find(date);
 
+    std::cout.precision(2);
+    
     if (it == exchangeRates.end()) {
         it = exchangeRates.lower_bound(date);
         
@@ -231,8 +233,7 @@ void BitcoinExchange::calculateExchangeRate(const std::string &date, double amou
 
     double exchangeRate = it->second;
     double result = amount * exchangeRate;
-    
-    std::cout.precision(2);
+
     std::cout << std::fixed;
     
     std::cout << date << " => " << amount << " = " << result << std::endl;
