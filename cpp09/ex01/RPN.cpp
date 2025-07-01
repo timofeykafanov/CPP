@@ -3,10 +3,13 @@
 #include <stdexcept>
 
 RPN::RPN() {}
+
 RPN::~RPN() {}
+
 RPN::RPN(const RPN &other) {
     *this = other;
 }
+
 RPN &RPN::operator=(const RPN &other) {
     if (this != &other) {
         this->stack = other.stack;
@@ -15,15 +18,19 @@ RPN &RPN::operator=(const RPN &other) {
 }
 
 double RPN::calculate(const std::string &expression) {
+    if (expression.empty() || expression.find_first_not_of(' ') == std::string::npos)
+        throw std::runtime_error("Expression is empty.");
     for (std::string::const_iterator it = expression.begin(); it != expression.end(); ++it) {
         if (std::isspace(*it)) {
             continue;
         } else if (std::isdigit(*it)) {
             stack.push(*it - '0');
         } else {
-            if (stack.size() < 2) {
+            if (std::string("+-*/").find(*it) == std::string::npos)
+                throw std::runtime_error("Invalid character in expression.");
+            if (stack.size() < 2)
                 throw std::runtime_error("Not enough operands.");
-            }
+
             double b = stack.top(); stack.pop();
             double a = stack.top(); stack.pop();
             switch (*it) {
