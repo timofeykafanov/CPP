@@ -24,9 +24,9 @@ public:
     void sortVector();
     void sortDeque();
 
-    int getCounter() const { return counter; }
-    int getVectorSize() const { return vector.size(); }
-    int getDequeSize() const { return deque.size(); }
+    int getCounter() const;
+    int getVectorSize() const;
+    int getDequeSize() const;
     
     template <typename Out>
     Out generateSequence(size_t length);
@@ -47,14 +47,14 @@ public:
 template <typename T, typename U>
 T PmergeMe::reorderSequence(T& smaller, T& bigger) {
     T reorderedSmaller;
-    U used(smaller.size(), false);
+    U used(smaller.size(), 0);
 
     for (size_t b = 0; b < bigger.size(); ++b) {
-        int second = bigger[b][1];
+        int second = bigger[b].back();
         for (size_t s = 0; s < smaller.size(); ++s) {
-            if (!used[s] && smaller[s][1] == second) {
+            if (!used[s] && smaller[s].back() == second) {
                 reorderedSmaller.push_back(smaller[s]);
-                used[s] = true;
+                used[s] = 1;
                 break;
             }
         }
@@ -72,7 +72,7 @@ T PmergeMe::reorderSequence(T& smaller, T& bigger) {
 template <typename T, typename U>
 void PmergeMe::bynaryInsertionSort(T& biggerContainer, T& smaller, U &indices) {
     size_t i = 0;
-    while (i < smaller.size()) {
+    while (i < indices.size()) {
         size_t j = 0;
         while (j < biggerContainer.size()) {
             if (smaller[indices[i]].back() == -1
@@ -146,7 +146,7 @@ T PmergeMe::recursionPairing(T& container, T& biggerContainer) {
     
     U smallerIndices = generateSequence<U>(smaller.size());
 
-    smaller = reorderSequence<T, U>(smaller, bigger);
+    smaller = reorderSequence<T, U>(smaller, biggerContainer);
     
     if (bigger.size() == 1) {
         biggerContainer.push_back(bigger[0]);
@@ -172,7 +172,7 @@ void PmergeMe::mergeInsert(T& container, T& biggerContainer) {
     for (typename T::iterator it = container.begin(); it != container.end(); ++it) {
         std::cout << (*it)[0] << " ";
     }
-    std::cout << std::endl;
+    std::cout << "\n" << std::endl;
 
     sorted = recursionPairing<T, U>(container, biggerContainer);
 
@@ -183,7 +183,6 @@ void PmergeMe::mergeInsert(T& container, T& biggerContainer) {
     }
 
     U smallerIndices = generateSequence<U>(smaller.size());
-
 
     smaller = reorderSequence<T, U>(smaller, sorted);
 

@@ -50,3 +50,7 @@ void PmergeMe::sortVector() {
 void PmergeMe::sortDeque() {
     mergeInsert<std::deque<std::deque<int> >, std::deque<int> >(deque, biggerDeque);
 }
+
+int PmergeMe::getCounter() const { return counter; }
+int PmergeMe::getVectorSize() const { return vector.size(); }
+int PmergeMe::getDequeSize() const { return deque.size(); }
